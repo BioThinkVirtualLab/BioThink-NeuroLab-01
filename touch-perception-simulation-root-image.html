@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D Touch-to-Perception Simulation</title>
+<style>
+:root {
+  --bg:#071018; --panel:#0e1a24; --line:#234154; --txt:#eef7ff;
+  --muted:#9ab0bf; --blue:#48bfff; --gold:#ffbf4a; --green:#65df78; --violet:#a06cff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 0,#122433,#071018 60%);color:var(--txt);
+font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:1500px;margin:auto;padding:16px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+h1{font-size:clamp(24px,3vw,40px);margin:0}
+.sub{color:var(--muted);margin-top:4px}
+button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;color:#fff;background:#1667c8;cursor:pointer}
+button.secondary{background:#263848} button:disabled{opacity:.45;cursor:not-allowed}
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 270px;gap:14px}
+.panel{background:rgba(10,22,31,.94);border:1px solid #1f3a4a;border-radius:16px;box-shadow:0 16px 45px rgba(0,0,0,.25)}
+.controls,.pathway{padding:16px}
+.scene{position:relative;aspect-ratio:16/10;overflow:hidden;background:#050b10}
+.scene img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88) brightness(.7)}
+.scene:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.18),transparent 25%,transparent 78%,rgba(0,0,0,.18));pointer-events:none}
+canvas{position:absolute;inset:0;width:100%;height:100%;z-index:4}
+.hotspot{position:absolute;width:22px;height:22px;border-radius:50%;border:3px solid white;background:rgba(255,255,255,.2);
+box-shadow:0 0 18px currentColor;z-index:6;transform:translate(-50%,-50%);transition:.2s}
+.hotspot.active{transform:translate(-50%,-50%) scale(1.7);background:currentColor}
+#h1{left:33%;top:76%;color:var(--gold)} #h2{left:43%;top:57%;color:var(--gold)}
+#h3{left:57%;top:72%;color:var(--green)} #h4{left:58%;top:44%;color:var(--blue)} #h5{left:54%;top:18%;color:var(--violet)}
+.caption{position:absolute;left:18px;right:18px;bottom:15px;z-index:7;padding:12px 14px;border-radius:12px;
+background:rgba(3,10,16,.84);border:1px solid #24465b;backdrop-filter:blur(6px)}
+.caption b{color:#fff} .caption span{color:#b8cad6}
+label{display:block;font-weight:700;margin:13px 0 7px}
+input[type=range]{width:100%}
+.metric{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #203747;gap:12px}
+.metric strong{text-align:right}
+.muted{color:var(--muted);font-size:13px;line-height:1.45}
+.step{padding:12px;border:1px solid #234154;border-radius:12px;margin-bottom:10px;transition:.2s}
+.step.active{border-color:currentColor;background:rgba(255,255,255,.05);transform:translateX(-4px)}
+.step small{display:block;color:var(--muted);margin-top:4px}
+.progress{height:10px;background:#1c2c38;border-radius:999px;overflow:hidden;margin-top:14px}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--blue),var(--violet));transition:width .2s}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px}
+@media(max-width:1050px){.layout{grid-template-columns:1fr} .scene{aspect-ratio:16/11}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>3D Touch-to-Perception Simulation</h1><div class="sub">Adjust the touch, then watch the signal travel from arm receptors to conscious perception.</div></div>
+    <div><button id="start">Start Touch</button> <button class="secondary" id="pause">Pause</button> <button class="secondary" id="reset">Reset</button></div>
+  </div>
+
+  <div class="layout">
+    <aside class="panel controls">
+      <h3>Simulation controls</h3>
+      <label>Touch intensity: <span id="intensityLabel">60%</span></label>
+      <input id="intensity" type="range" min="20" max="100" value="60">
+      <label>Touch duration: <span id="durationLabel">200 ms</span></label>
+      <input id="duration" type="range" min="80" max="500" step="20" value="200">
+      <label>Playback speed: <span id="speedLabel">1.0×</span></label>
+      <input id="speed" type="range" min="0.5" max="2" step="0.25" value="1">
+
+      <h3 style="margin-top:22px">Live statistics</h3>
+      <div class="metric"><span>Receptors activated</span><strong id="receptors">0</strong></div>
+      <div class="metric"><span>Sensory spikes</span><strong id="spikes">0</strong></div>
+      <div class="metric"><span>Neurons recruited</span><strong id="neurons">0</strong></div>
+      <div class="metric"><span>Synaptic events</span><strong id="synapses">0</strong></div>
+      <div class="metric"><span>Elapsed time</span><strong id="elapsed">0 ms</strong></div>
+      <div class="progress"><div id="bar"></div></div>
+      <p class="muted">Counts are illustrative estimates designed for teaching. A real touch response varies with skin area, receptor density, attention, and context.</p>
+    </aside>
+
+    <main class="panel scene" id="scene">
+      <img
+        id="pathwayImage"
+        src="touch-perception-pathway.png"
+        alt="3D anatomical model of the touch pathway"
+        onerror="this.style.display='none'; document.getElementById('imageError').style.display='grid';"
+      >
+      <div id="imageError" style="
+        display:none; position:absolute; inset:0; place-items:center;
+        padding:30px; text-align:center; z-index:3; color:#eef7ff;
+        background:linear-gradient(180deg,#101d27,#050b10);
+      ">
+        <div>
+          <strong style="font-size:22px;">Pathway image could not be loaded</strong>
+          <p style="color:#9ab0bf;line-height:1.5;">
+            Confirm that <code>touch-perception-pathway.png</code>
+            is uploaded beside this HTML file.
+          </p>
+        </div>
+      </div>
+      <canvas id="fx"></canvas>
+      <div class="hotspot" id="h1"></div><div class="hotspot" id="h2"></div><div class="hotspot" id="h3"></div><div class="hotspot" id="h4"></div><div class="hotspot" id="h5"></div>
+      <div class="caption"><b id="stageTitle">Ready</b><br><span id="stageText">Press Start Touch to begin the simulation.</span></div>
+    </main>
+
+    <aside class="panel pathway">
+      <h3>Pathway overview</h3>
+      <div class="step" id="s1" style="color:var(--gold)">1. Skin receptors<small>Mechanical force is converted into electrical activity.</small></div>
+      <div class="step" id="s2" style="color:var(--gold)">2. Sensory neurons<small>Action potentials travel toward the spinal cord.</small></div>
+      <div class="step" id="s3" style="color:var(--green)">3. Spinal cord<small>The signal branches into relay pathways.</small></div>
+      <div class="step" id="s4" style="color:var(--blue)">4. Thalamus<small>Information is filtered and routed.</small></div>
+      <div class="step" id="s5" style="color:var(--violet)">5. Somatosensory cortex<small>The distributed pattern becomes conscious touch.</small></div>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>Peripheral signal</span>
+        <span><i style="background:var(--green)"></i>Spinal processing</span>
+        <span><i style="background:var(--blue)"></i>Brain relay</span>
+        <span><i style="background:var(--violet)"></i>Cortical activity</span>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const canvas=$('#fx'), ctx=canvas.getContext('2d'), scene=$('#scene');
+let W,H, running=false, paused=false, raf=0, startT=0, pauseAt=0, accumulatedPause=0;
+
+const pts=[
+  [0.33,0.76],[0.43,0.57],[0.57,0.72],[0.58,0.44],[0.54,0.18]
+];
+const stages=[
+  ['Skin receptors','Pressure deforms the skin and activates mechanoreceptors.'],
+  ['Sensory neurons','Action potentials travel along peripheral sensory axons.'],
+  ['Spinal cord','The signal branches through spinal relay circuits and ascending pathways.'],
+  ['Thalamus','The thalamus filters and routes touch information toward the cortex.'],
+  ['Somatosensory cortex','A distributed cortical pattern becomes the conscious experience of touch.']
+];
+
+function resize(){
+  const r=scene.getBoundingClientRect(); canvas.width=r.width*devicePixelRatio; canvas.height=r.height*devicePixelRatio;
+  canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  W=r.width;H=r.height;
+}
+addEventListener('resize',resize); resize();
+
+function config(){
+  const I=+$('#intensity').value/100, D=+$('#duration').value, S=+$('#speed').value;
+  return {I,D,S,total:(3000/S)+D*2};
+}
+function fmt(n){
+  if(n>=1e6)return (n/1e6).toFixed(1)+'M';
+  if(n>=1e3)return Math.round(n/1e3)+'K';
+  return Math.round(n).toLocaleString();
+}
+function stats(progress){
+  const {I,D}=config();
+  const receptors=Math.round(4+46*I);
+  const spikes=Math.round(receptors*(D/100)*(6+12*I));
+  const neurons=Math.round((12000+188000*I)*Math.pow(progress,1.55));
+  const syn=Math.round(neurons*(30+40*I)*Math.pow(progress,1.15));
+  $('#receptors').textContent=progress>0?receptors:0;
+  $('#spikes').textContent=progress>0?Math.round(spikes*Math.min(1,progress*2.4)):0;
+  $('#neurons').textContent=fmt(neurons);
+  $('#synapses').textContent=fmt(syn);
+}
+function setStage(i){
+  document.querySelectorAll('.step,.hotspot').forEach(x=>x.classList.remove('active'));
+  if(i>=0){
+    $('#s'+(i+1)).classList.add('active'); $('#h'+(i+1)).classList.add('active');
+    $('#stageTitle').textContent=stages[i][0]; $('#stageText').textContent=stages[i][1];
+  }
+}
+function bezier(a,b,t){
+  const x1=a[0]*W,y1=a[1]*H,x2=b[0]*W,y2=b[1]*H;
+  const cx=(x1+x2)/2 + (y2-y1)*0.12, cy=(y1+y2)/2 - (x2-x1)*0.08;
+  const u=1-t;
+  return [u*u*x1+2*u*t*cx+t*t*x2,u*u*y1+2*u*t*cy+t*t*y2];
+}
+function draw(progress){
+  ctx.clearRect(0,0,W,H);
+  const cols=['#ffbf4a','#ffbf4a','#65df78','#48bfff','#a06cff'];
+  ctx.lineCap='round';
+  for(let i=0;i<pts.length-1;i++){
+    const segStart=i/(pts.length-1), segEnd=(i+1)/(pts.length-1);
+    const local=Math.max(0,Math.min(1,(progress-segStart)/(segEnd-segStart)));
+    ctx.beginPath();
+    for(let j=0;j<=60*local;j++){let p=bezier(pts[i],pts[i+1],j/60);j?ctx.lineTo(...p):ctx.moveTo(...p)}
+    ctx.strokeStyle=cols[i];ctx.lineWidth=4;ctx.shadowColor=cols[i];ctx.shadowBlur=16;ctx.stroke();ctx.shadowBlur=0;
+    if(local>0&&local<1){
+      const p=bezier(pts[i],pts[i+1],local);
+      for(let k=0;k<7;k++){ctx.beginPath();ctx.arc(p[0]-k*8,p[1]+Math.sin(k)*3,5-k*.45,0,Math.PI*2);ctx.fillStyle=cols[i];ctx.globalAlpha=1-k*.12;ctx.fill()}
+      ctx.globalAlpha=1;
+    }
+  }
+  if(progress>.78){
+    const p=pts[4],cx=p[0]*W,cy=p[1]*H,spread=(progress-.78)/.22;
+    for(let i=0;i<70*spread;i++){let a=i*2.39,r=8+((i*17)%85)*spread;ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r*.45,2.5,0,Math.PI*2);ctx.fillStyle='#a06cff';ctx.globalAlpha=.35+.65*((i%7)/7);ctx.fill()}
+    ctx.globalAlpha=1;
+  }
+}
+function frame(ts){
+  if(!running)return;
+  if(paused){raf=requestAnimationFrame(frame);return}
+  const c=config(); const elapsed=ts-startT-accumulatedPause; const p=Math.min(1,elapsed/c.total);
+  draw(p); stats(p); $('#bar').style.width=(p*100)+'%'; $('#elapsed').textContent=Math.round(p*c.D)+' ms';
+  const stage=Math.min(4,Math.floor(p*5)); setStage(p>0?stage:-1);
+  if(p<1)raf=requestAnimationFrame(frame); else{running=false;$('#stageTitle').textContent='Touch perceived';$('#stageText').textContent='The brain integrates receptor input, timing, location, and context into one conscious sensation.'}
+}
+$('#start').onclick=()=>{cancelAnimationFrame(raf);running=true;paused=false;accumulatedPause=0;startT=performance.now();raf=requestAnimationFrame(frame)};
+$('#pause').onclick=()=>{if(!running)return;paused=!paused;$('#pause').textContent=paused?'Resume':'Pause';if(paused)pauseAt=performance.now();else{accumulatedPause+=performance.now()-pauseAt}};
+$('#reset').onclick=()=>{running=false;paused=false;cancelAnimationFrame(raf);draw(0);stats(0);setStage(-1);$('#bar').style.width='0';$('#elapsed').textContent='0 ms';$('#stageTitle').textContent='Ready';$('#stageText').textContent='Press Start Touch to begin the simulation.';$('#pause').textContent='Pause'};
+['intensity','duration','speed'].forEach(id=>$('#'+id).oninput=()=>{$('#intensityLabel').textContent=$('#intensity').value+'%';$('#durationLabel').textContent=$('#duration').value+' ms';$('#speedLabel').textContent=(+$('#speed').value).toFixed(2).replace(/0$/,'')+'×';if(!running)stats(0)})
+draw(0);
+</script>
+
+<script>
+(function () {
+  const img = document.getElementById("pathwayImage");
+  const errorBox = document.getElementById("imageError");
+  const attempted = document.getElementById("attemptedPath");
+
+  const candidates = [
+    new URL("touch-perception-pathway.png", window.location.href).href,
+    new URL("./touch-perception-pathway.png", window.location.href).href
+  ];
+
+  let index = 0;
+
+  function tryNext() {
+    if (index >= candidates.length) {
+      if (attempted) attempted.textContent = candidates[candidates.length - 1];
+      if (errorBox) errorBox.style.display = "grid";
+      return;
+    }
+
+    const url = candidates[index++];
+    if (attempted) attempted.textContent = url;
+    img.src = url;
+  }
+
+  img.addEventListener("load", function () {
+    if (errorBox) errorBox.style.display = "none";
+  });
+
+  img.addEventListener("error", tryNext);
+
+  tryNext();
+})();
+</script>
+
+</body>
+</html>
