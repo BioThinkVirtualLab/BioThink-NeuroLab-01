@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BioThink Neural Signal vs Rocket</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#05070d;color:#fff}
+header{text-align:center;padding:28px 20px;background:linear-gradient(135deg,#761535,#0a1220)}
+h1{font-size:46px;margin:8px 0}.sub{color:#c9c5cf;max-width:900px;margin:auto;line-height:1.5}
+.card{max-width:1120px;margin:22px auto;background:#101521;border:1px solid #ffffff22;border-radius:24px;overflow:hidden}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:14px;background:#0005}
+button,select{padding:11px 15px;border-radius:999px;border:1px solid #ffffff28;background:#ffffff12;color:#fff;font-weight:700}
+button{cursor:pointer}.primary{background:#8b1e3f}.gold{background:#ffd166;color:#241600}
+.stage{padding:25px;background:radial-gradient(circle at 80% 10%,#30507844,transparent 30%),#070b14;min-height:610px}
+.big{text-align:center;font-size:54px;font-weight:900;color:#ffd166}.small{text-align:center;color:#c9c5cf;margin-bottom:22px}
+.racer{background:#0b101b;border:1px solid #ffffff18;border-radius:20px;padding:18px;margin:20px 0}
+.top{display:flex;justify-content:space-between;gap:15px}.name{font-size:22px;font-weight:900}.desc{color:#c9c5cf;font-size:14px;margin-top:5px}.time{text-align:right;font-size:22px;font-weight:900;color:#ffd166}.speed{text-align:right;color:#c9c5cf;font-size:13px}
+.track{position:relative;height:72px;border-radius:999px;background:#ffffff0d;overflow:hidden;margin-top:12px}
+.track:before{content:"";position:absolute;left:18px;right:18px;top:50%;height:8px;transform:translateY(-50%);border-radius:999px;background:linear-gradient(90deg,#58c7ff55,#b59cff66,#7ee09b55)}
+.finish{position:absolute;right:18px;top:7px;bottom:7px;width:3px;background:repeating-linear-gradient(#fff 0 8px,#111 8px 16px)}
+.marker{position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:3}
+.pulse{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle,#fff,#58c7ff 40%,transparent 72%);box-shadow:0 0 26px #58c7ff}
+.rocket{font-size:42px;transform:translateY(-50%) rotate(90deg)}
+.progress{display:flex;justify-content:space-between;color:#c9c5cf;font-size:13px;margin-top:8px}
+.result{text-align:center;background:#76153555;border:1px solid #ffffff20;border-radius:18px;padding:16px;margin-top:20px}
+.result h2{margin:0 0 6px}.result p{color:#c9c5cf;margin:0;line-height:1.5}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.fact{background:#0b101b;border:1px solid #ffffff16;border-radius:16px;padding:14px;color:#c9c5cf;line-height:1.45}.fact b{display:block;color:#fff;margin-bottom:4px}
+.note{background:#fff4cf;color:#3e2b08;padding:15px 20px;line-height:1.45}
+@media(max-width:760px){h1{font-size:34px}.facts{grid-template-columns:1fr}.top{display:block}.time,.speed{text-align:left;margin-top:8px}.big{font-size:40px}}
+</style>
+</head>
+<body>
+<header>
+<div>BioThink Virtual NeuroLab · Speed & Scale Race</div>
+<h1>Neural Signal vs. Moon Rocket</h1>
+<div class="sub">Compare a fast action potential with an Apollo-style spacecraft over exactly the same distance.</div>
+</header>
+
+<div class="card">
+<div class="toolbar">
+<select id="distance" onchange="updateNumbers()">
+<option value="149000">149,000 km — lower brain white-matter estimate</option>
+<option value="176000" selected>176,000 km — upper brain white-matter estimate</option>
+<option value="384400">384,400 km — Earth–Moon distance</option>
+</select>
+<button class="primary" onclick="startRace()">▶ Start Race</button>
+<button class="gold" onclick="resetRace()">Reset</button>
+</div>
+
+<div class="stage">
+<div class="big" id="distanceTitle">176,000 km</div>
+<div class="small" id="distanceSub">Estimated upper total length of myelinated axons in young-adult cerebral white matter</div>
+
+<div class="racer">
+<div class="top"><div><div class="name">⚡ Fast myelinated action potential</div><div class="desc">Uses 120 m/s, a fast upper conduction velocity.</div></div><div><div class="time" id="nerveTime"></div><div class="speed">120 m/s · 432 km/h</div></div></div>
+<div class="track" id="nerveTrack"><div class="marker pulse" id="nerveMarker"></div><div class="finish"></div></div>
+<div class="progress"><span id="nerveProgress">0 km</span><span>Finish</span></div>
+</div>
+
+<div class="racer">
+<div class="top"><div><div class="name">🚀 Apollo-style lunar spacecraft</div><div class="desc">Uses the average speed implied by 384,400 km in about 72 hours.</div></div><div><div class="time" id="rocketTime"></div><div class="speed">≈ 1,483 m/s · 5,340 km/h average</div></div></div>
+<div class="track" id="rocketTrack"><div class="marker rocket" id="rocketMarker">🚀</div><div class="finish"></div></div>
+<div class="progress"><span id="rocketProgress">0 km</span><span>Finish</span></div>
+</div>
+
+<div class="result"><h2 id="resultTitle">Same distance. Very different clocks.</h2><p id="resultText"></p></div>
+
+<div class="facts">
+<div class="fact"><b>Longest single axons</b>Some human axons can exceed one meter.</div>
+<div class="fact"><b>Brain white matter</b>Published estimates place total myelinated axon length at roughly 149,000–176,000 km.</div>
+<div class="fact"><b>Important</b>No action potential travels through all these axons as one continuous route; this is a scale thought experiment.</div>
+</div>
+</div>
+
+<div class="note"><b>Scientific framing:</b> Nerve conduction varies by fiber type; 120 m/s is a fast upper value. Rocket speed changes throughout flight, so the simulation uses an average Apollo-style Earth-to-Moon rate.</div>
+</div>
+
+<script>
+const NERVE_MPS=120, MOON_KM=384400, APOLLO_HOURS=72;
+const ROCKET_MPS=(MOON_KM*1000)/(APOLLO_HOURS*3600);
+let raf=null;
+function km(){return Number(document.getElementById('distance').value)}
+function fmt(sec){return sec>=86400?(sec/86400).toFixed(1)+' days':(sec/3600).toFixed(1)+' hours'}
+function updateNumbers(){
+ const d=km(), n=d*1000/NERVE_MPS, r=d*1000/ROCKET_MPS;
+ document.getElementById('distanceTitle').textContent=d.toLocaleString()+' km';
+ document.getElementById('distanceSub').textContent=d===384400?'Average Earth–Moon distance':d===149000?'Estimated lower total length of myelinated axons in young-adult cerebral white matter':'Estimated upper total length of myelinated axons in young-adult cerebral white matter';
+ document.getElementById('nerveTime').textContent=fmt(n);
+ document.getElementById('rocketTime').textContent=fmt(r);
+ document.getElementById('resultText').textContent='The Apollo-style average speed is about '+(ROCKET_MPS/NERVE_MPS).toFixed(1)+' times faster than the nerve-conduction value used here.';
+ resetRace();
+}
+function setPos(markerId,trackId,f){
+ const track=document.getElementById(trackId), marker=document.getElementById(markerId);
+ const max=track.clientWidth-marker.offsetWidth-22;
+ marker.style.left=(10+max*Math.max(0,Math.min(1,f)))+'px';
+}
+function resetPositions(){
+ setPos('nerveMarker','nerveTrack',0);setPos('rocketMarker','rocketTrack',0);
+ document.getElementById('nerveProgress').textContent='0 km';
+ document.getElementById('rocketProgress').textContent='0 km';
+ document.getElementById('resultTitle').textContent='Same distance. Very different clocks.';
+}
+function startRace(){
+ if(raf)cancelAnimationFrame(raf);
+ resetPositions();
+ const d=km(), n=d*1000/NERVE_MPS, r=d*1000/ROCKET_MPS, maxReal=Math.max(n,r), start=performance.now(), anim=12000;
+ function frame(now){
+  const e=Math.min((now-start)/anim,1), real=e*maxReal, nf=Math.min(real/n,1), rf=Math.min(real/r,1);
+  setPos('nerveMarker','nerveTrack',nf);setPos('rocketMarker','rocketTrack',rf);
+  document.getElementById('nerveProgress').textContent=Math.round(d*nf).toLocaleString()+' km';
+  document.getElementById('rocketProgress').textContent=Math.round(d*rf).toLocaleString()+' km';
+  if(rf>=1&&nf<1)document.getElementById('resultTitle').textContent='The spacecraft has arrived. The neural pulse is still traveling.';
+  if(nf>=1)document.getElementById('resultTitle').textContent='Both finish — but on dramatically different clocks.';
+  if(e<1)raf=requestAnimationFrame(frame);
+ }
+ raf=requestAnimationFrame(frame);
+}
+function resetRace(){if(raf)cancelAnimationFrame(raf);raf=null;resetPositions()}
+window.addEventListener('resize',resetPositions);
+updateNumbers();
+</script>
+</body>
+</html>
