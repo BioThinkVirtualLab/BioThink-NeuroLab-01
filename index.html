@@ -1,160 +1,471 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BioThink Virtual Neuroscience Lab</title>
-<style>
-  :root{
-    --maroon:#8A1538;
-    --deep:#4B071C;
-    --dark:#101010;
-    --cream:#FAF7F3;
-    --soft:#EFE4E6;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(138,21,56,.28), transparent 28%),
-      radial-gradient(circle at 82% 10%, rgba(138,21,56,.18), transparent 26%),
-      linear-gradient(135deg,#0d0d0d,#270713 55%,#0d0d0d);
-    color:#1b1b1b;
-    min-height:100vh;
-  }
-  .page{max-width:1180px;margin:0 auto;padding:38px 26px 50px;}
-  .hero{
-    background:rgba(250,247,243,.98);
-    border-radius:28px;
-    padding:42px;
-    box-shadow:0 25px 70px rgba(0,0,0,.38);
-    overflow:hidden;
-    position:relative;
-  }
-  .hero:after{
-    content:"";
-    position:absolute;
-    right:-120px;
-    top:-120px;
-    width:360px;
-    height:360px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(138,21,56,.18), transparent 68%);
-  }
-  .topline{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;position:relative;z-index:1;}
-  .brand{color:var(--maroon);font-family:Georgia,serif;font-size:30px;font-weight:bold;letter-spacing:.3px;}
-  .portal{color:#333;font-size:13px;letter-spacing:.16em;text-transform:uppercase;margin-top:6px;}
-  .badge{border:1px solid rgba(138,21,56,.25);color:var(--maroon);border-radius:999px;padding:10px 15px;font-weight:700;background:#fff;white-space:nowrap;font-size:14px;}
-  h1{margin:48px 0 14px;font-family:Georgia,serif;font-size:52px;line-height:1.04;color:#111;max-width:760px;position:relative;z-index:1;}
-  .lead{max-width:740px;font-size:18px;line-height:1.55;color:#333;position:relative;z-index:1;}
-  .section-title{margin:34px 0 16px;color:#fff;font-family:Georgia,serif;font-size:30px;}
-  .labs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .lab-card{
-    background:rgba(255,255,255,.96);
-    border-radius:22px;
-    padding:24px;
-    min-height:220px;
-    border:1px solid rgba(255,255,255,.5);
-    box-shadow:0 14px 35px rgba(0,0,0,.25);
-    position:relative;
-    overflow:hidden;
-  }
-  .lab-card:before{
-    content:"";
-    position:absolute;
-    right:-45px;
-    top:-45px;
-    width:130px;
-    height:130px;
-    border-radius:50%;
-    background:radial-gradient(circle, rgba(138,21,56,.18), transparent 65%);
-  }
-  .number{color:var(--maroon);font-weight:800;letter-spacing:.12em;font-size:12px;text-transform:uppercase;margin-bottom:18px;}
-  .lab-card h2{margin:0 0 10px;font-family:Georgia,serif;font-size:24px;color:#111;}
-  .lab-card p{margin:0;color:#4b4b4b;line-height:1.45;font-size:15px;}
-  .status{display:inline-block;margin-top:18px;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;}
-  .active{background:var(--maroon);color:white;text-decoration:none;}
-  .coming{background:#f4ecee;color:var(--maroon);}
-  .resources{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;}
-  .resource{background:rgba(250,247,243,.96);border-radius:22px;padding:24px;border-left:5px solid var(--maroon);box-shadow:0 14px 35px rgba(0,0,0,.22);}
-  .resource h3{margin:0 0 8px;font-family:Georgia,serif;font-size:22px;}
-  .resource p{margin:0;color:#444;line-height:1.45;}
-  .footer{text-align:center;color:#d9cfd1;font-size:13px;margin-top:34px;}
-  a.card-link{text-decoration:none;color:inherit;}
-  @media(max-width:900px){.labs{grid-template-columns:1fr 1fr}h1{font-size:42px}}
-  @media(max-width:640px){.labs,.resources{grid-template-columns:1fr}.hero{padding:30px}.topline{display:block}.badge{display:inline-block;margin-top:18px}h1{font-size:36px;margin-top:34px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BioThink Virtual Neuroscience Lab</title>
+
+  <style>
+    :root {
+      --maroon: #8A1538;
+      --deep: #4B071C;
+      --dark: #101010;
+      --cream: #FAF7F3;
+      --soft: #EFE4E6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #1b1b1b;
+
+      background:
+        radial-gradient(
+          circle at 15% 20%,
+          rgba(138, 21, 56, 0.28),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 82% 10%,
+          rgba(138, 21, 56, 0.18),
+          transparent 26%
+        ),
+        linear-gradient(
+          135deg,
+          #0d0d0d,
+          #270713 55%,
+          #0d0d0d
+        );
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 38px 26px 50px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 42px;
+      background: rgba(250, 247, 243, 0.98);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.38);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(138, 21, 56, 0.18),
+          transparent 68%
+        );
+    }
+
+    .topline {
+      position: relative;
+      z-index: 1;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .brand {
+      color: var(--maroon);
+      font-family: Georgia, serif;
+      font-size: 30px;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+    }
+
+    .portal {
+      margin-top: 6px;
+      color: #333;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      padding: 10px 15px;
+      color: var(--maroon);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+
+      background: #fff;
+      border: 1px solid rgba(138, 21, 56, 0.25);
+      border-radius: 999px;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+
+      max-width: 760px;
+      margin: 48px 0 14px;
+
+      color: #111;
+      font-family: Georgia, serif;
+      font-size: 52px;
+      line-height: 1.04;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+
+      max-width: 740px;
+      margin-bottom: 0;
+
+      color: #333;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .section-title {
+      margin: 34px 0 16px;
+      color: #fff;
+      font-family: Georgia, serif;
+      font-size: 30px;
+    }
+
+    .labs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card-link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .lab-card {
+      position: relative;
+      overflow: hidden;
+
+      min-height: 235px;
+      height: 100%;
+      padding: 24px;
+
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 22px;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.25);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .card-link:hover .lab-card {
+      transform: translateY(-5px);
+      border-color: rgba(138, 21, 56, 0.35);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.33);
+    }
+
+    .lab-card::before {
+      content: "";
+      position: absolute;
+      right: -45px;
+      top: -45px;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(138, 21, 56, 0.18),
+          transparent 65%
+        );
+    }
+
+    .number {
+      margin-bottom: 18px;
+
+      color: var(--maroon);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .lab-card h2 {
+      margin: 0 0 10px;
+
+      color: #111;
+      font-family: Georgia, serif;
+      font-size: 24px;
+    }
+
+    .lab-card p {
+      margin: 0;
+      color: #4b4b4b;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 8px 12px;
+
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .active {
+      color: white;
+      background: var(--maroon);
+    }
+
+    .coming {
+      color: var(--maroon);
+      background: #f4ecee;
+    }
+
+    .footer {
+      margin-top: 34px;
+      color: #d9cfd1;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .labs {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .labs {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 30px;
+      }
+
+      .topline {
+        display: block;
+      }
+
+      .badge {
+        display: inline-block;
+        margin-top: 18px;
+      }
+
+      h1 {
+        margin-top: 34px;
+        font-size: 36px;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <main class="page">
+
     <section class="hero">
       <div class="topline">
+
         <div>
           <div class="brand">BioThink</div>
           <div class="portal">Virtual Neuroscience Lab</div>
         </div>
+
         <div class="badge">Student Portal</div>
+
       </div>
+
       <h1>Interactive labs for thinking like a neuroscientist.</h1>
+
       <p class="lead">
-        Welcome to the BioThink Virtual Neuroscience Lab. These simulations help connect core neuroscience concepts
-        to brain-computer interfaces, artificial intelligence, scientific literature, and the review article we will build together.
+        Welcome to the BioThink Virtual Neuroscience Lab. These
+        simulations connect core neuroscience concepts to sensory
+        processing, brain-computer interfaces, artificial intelligence,
+        scientific literature, and the review article we will build
+        together.
       </p>
     </section>
 
+
     <h2 class="section-title">Virtual Labs</h2>
 
+
     <section class="labs">
-      <a class="card-link" href="interactive membrane action potential lab.html ">
-        <div class="lab-card">
+
+      <!-- LAB 01 -->
+      <a
+        class="card-link"
+        href="interactive-membrane-action-potential-lab.html"
+      >
+        <article class="lab-card">
           <div class="number">Lab 01</div>
-          <h2>Membrane Action Potential lab</h2>
-          <p>Explore resting potential, threshold, action potentials, depolarization, repolarization, and recovery.</p>
-         <span class="status active">interactive membrane action potential lab.html →</span>
-        </div>
+
+          <h2>Membrane & Action Potential Lab</h2>
+
+          <p>
+            Control Na⁺ and K⁺ channels and explore resting potential,
+            threshold, depolarization, repolarization, hyperpolarization,
+            and recovery.
+          </p>
+
+          <span class="status active">
+            Launch Lab →
+          </span>
+        </article>
       </a>
 
-       <a class="card-link" href="neuron firing simulator.html ">
-      <div class="lab-card">
-        <div class="number">Lab 02</div>
-        <h2>Neuron Firing Simulator</h2>
-        <p>Trace how electrical signals become chemical messages and influence the next neuron in a circuit.</p>
-        <span class="status active">neuron firing simulator.html →</span>
-      </div >
+
+      <!-- LAB 02 -->
+      <a
+        class="card-link"
+        href="neuron-firing-simulator.html"
+      >
+        <article class="lab-card">
+          <div class="number">Lab 02</div>
+
+          <h2>Neuron Firing Simulator</h2>
+
+          <p>
+            Trace how electrical signals travel through a neuron,
+            become chemical messages at a synapse, and influence the
+            next neuron in a circuit.
+          </p>
+
+          <span class="status active">
+            Launch Lab →
+          </span>
+        </article>
       </a>
 
-       <a class="card-link" href="touch perception simulation.html.html ">
-      <div class="lab-card">
-        <div class="number">Lab 03</div>
-        <h2>Touch Perception</h2>
-        <p>Explore how simple sensory inputs are commuinicated to the brain.</p>
-        <span class="status active">touch perception simulation.html →</span>
-      </div>
-       </a>
 
-      <div class="lab-card">
-        <div class="number">Lab 04</div>
-        <h2>P300 Speller</h2>
-        <p>Simulate how attention to a flashing target can be decoded into a letter selection without a keyboard.</p>
-        <span class="status coming">Coming Soon</span>
-      </div>
+<!-- LAB 03 -->
+<a class="card-link" href="touch-perception-simulation.html">
+  <article class="lab-card">
 
-      <div class="lab-card">
-        <div class="number">Lab 05</div>
-        <h2>BCI Signal Decoder</h2>
-        <p>Follow the path from neural activity to electrodes, signal processing, AI classification, and output control.</p>
-        <span class="status coming">Coming Soon</span>
-      </div>
+    <div class="number">Lab 03</div>
 
-      <div class="lab-card">
-        <div class="number">Lab 06</div>
-        <h2>Neural Data & Ethics</h2>
-        <p>Explore why brain data is powerful, sensitive, noisy, and ethically important in the future of neurotechnology.</p>
-        <span class="status coming">Coming Soon</span>
-      </div>
-    </section>
+    <h2>Touch Perception Simulation</h2>
+
+    <p>
+      Follow a touch signal from sensory receptors in the skin,
+      through peripheral nerves and the spinal cord,
+      to the somatosensory cortex.
+    </p>
+
+    <span class="status active">
+      Launch Lab →
+    </span>
+
+  </article>
+</a>
+
+
+<!-- LAB 04 -->
+<a class="card-link" href="neural_signal_vs_rocket.html">
+  <article class="lab-card">
+
+    <div class="number">Lab 04</div>
+
+    <h2>Neural Signal vs. Rocket</h2>
+
+    <p>
+      Compare the speed of an action potential with rockets,
+      aircraft, sound, and light while discovering how signals
+      travel through the human nervous system.
+    </p>
+
+    <span class="status active">
+      Launch Lab →
+    </span>
+
+  </article>
+</a>
+
+
+<!-- LAB 05 -->
+<article class="lab-card">
+
+  <div class="number">Lab 05</div>
+
+  <h2>P300 Speller</h2>
+
+  <p>
+    Simulate how attention to a flashing target can be decoded
+    into letter selection without using a keyboard.
+  </p>
+
+  <span class="status coming">
+    Coming Soon
+  </span>
+
+</article>
+
+
+<!-- LAB 06 -->
+<article class="lab-card">
+
+  <div class="number">Lab 06</div>
+
+  <h2>BCI Signal Decoder</h2>
+
+  <p>
+    Follow neural activity from the brain through electrodes,
+    signal processing, AI decoding, and external device control.
+  </p>
+
+  <span class="status coming">
+    Coming Soon
+  </span>
+
+</article>
+
+
+<!-- LAB 07 -->
+<article class="lab-card">
+
+  <div class="number">Lab 07</div>
+
+  <h2>Neural Data & Ethics</h2>
+
+  <p>
+    Explore why brain data is powerful, sensitive, noisy,
+    and ethically important in the future of neurotechnology.
+  </p>
+
+  <span class="status coming">
+    Coming Soon
+  </span>
+
+</article>
+One suggestion that would
 
     <h2 class="section-title">Research Workspace</h2>
 
