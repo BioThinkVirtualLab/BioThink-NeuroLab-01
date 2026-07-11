@@ -315,157 +315,246 @@
     </section>
 
 
-    <h2 class="section-title">Virtual Labs</h2>
+    .lab-category {
+  margin: 34px 0 15px;
+}
+
+.lab-category:first-of-type {
+  margin-top: 18px;
+}
+
+.lab-category h3 {
+  margin: 0 0 5px;
+  color: #ffffff;
+  font-family: Georgia, serif;
+  font-size: 25px;
+}
+
+.lab-category p {
+  margin: 0;
+  color: #d9cfd1;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+   <h2 class="section-title">Virtual Labs</h2>
 
 
-    <section class="labs">
+<!-- =====================================================
+     FOUNDATIONS OF NEUROSCIENCE
+===================================================== -->
 
-      <!-- LAB 01 -->
-      <a
-        class="card-link"
-        href="interactive-membrane-action-potential-lab.html"
-      >
-        <article class="lab-card">
-          <div class="number">Lab 01</div>
+<div class="lab-category">
+  <h3>Foundations of Neuroscience</h3>
 
-          <h2>Membrane & Action Potential Lab</h2>
+  <p>
+    Explore how neurons generate signals, communicate across synapses,
+    and carry sensory information through the nervous system.
+  </p>
+</div>
 
-          <p>
-            Control Na⁺ and K⁺ channels and explore resting potential,
-            threshold, depolarization, repolarization, hyperpolarization,
-            and recovery.
-          </p>
+<section class="labs">
 
-          <span class="status active">
-            Launch Lab →
-          </span>
-        </article>
-      </a>
+  <!-- LAB 01 -->
+  <a
+    class="card-link"
+    href="interactive-membrane-action-potential-lab.html"
+  >
+    <article class="lab-card">
 
+      <div class="number">Lab 01</div>
 
-      <!-- LAB 02 -->
-      <a
-        class="card-link"
-        href="neuron-firing-simulator.html"
-      >
-        <article class="lab-card">
-          <div class="number">Lab 02</div>
+      <h2>Membrane &amp; Action Potential Lab</h2>
 
-          <h2>Neuron Firing Simulator</h2>
+      <p>
+        Control Na⁺ and K⁺ channels and explore resting potential,
+        threshold, depolarization, repolarization, hyperpolarization,
+        and recovery.
+      </p>
 
-          <p>
-            Trace how electrical signals travel through a neuron,
-            become chemical messages at a synapse, and influence the
-            next neuron in a circuit.
-          </p>
+      <span class="status active">
+        Launch Lab →
+      </span>
 
-          <span class="status active">
-            Launch Lab →
-          </span>
-        </article>
-      </a>
+    </article>
+  </a>
 
 
-<!-- LAB 03 -->
-<a class="card-link" href="touch-perception-simulation.html">
+  <!-- LAB 02 -->
+  <a
+    class="card-link"
+    href="neuron-firing-simulator.html"
+  >
+    <article class="lab-card">
+
+      <div class="number">Lab 02</div>
+
+      <h2>Neuron Firing Simulator</h2>
+
+      <p>
+        Trace how an electrical signal travels through a neuron,
+        reaches the axon terminals, and becomes a chemical message
+        at the synapse.
+      </p>
+
+      <span class="status active">
+        Launch Lab →
+      </span>
+
+    </article>
+  </a>
+
+
+  <!-- LAB 03 -->
+  <a
+    class="card-link"
+    href="touch-perception-simulation.html"
+  >
+    <article class="lab-card">
+
+      <div class="number">Lab 03</div>
+
+      <h2>Touch Perception Simulation</h2>
+
+      <p>
+        Follow a touch signal from receptors in the skin through
+        peripheral nerves, the spinal cord, and the brain’s
+        somatosensory cortex.
+      </p>
+
+      <span class="status active">
+        Launch Lab →
+      </span>
+
+    </article>
+  </a>
+
+
+  <!-- LAB 04 -->
+  <a
+    class="card-link"
+    href="neural_signal_vs_rocket.html"
+  >
+    <article class="lab-card">
+
+      <div class="number">Lab 04</div>
+
+      <h2>Neural Signal vs. Rocket</h2>
+
+      <p>
+        Compare the speed of a fast neural signal with an
+        Apollo-style spacecraft while exploring the extraordinary
+        scale of axons in the human brain.
+      </p>
+
+      <span class="status active">
+        Launch Lab →
+      </span>
+
+    </article>
+  </a>
+
+</section>
+
+
+<!-- =====================================================
+     BRAIN–COMPUTER INTERFACES
+===================================================== -->
+
+<div class="lab-category">
+  <h3>Brain–Computer Interfaces</h3>
+
+  <p>
+    Investigate how neural activity can be recorded, processed,
+    interpreted, and translated into computer commands.
+  </p>
+</div>
+
+<section class="labs">
+
+  <!-- LAB 05 -->
   <article class="lab-card">
 
-    <div class="number">Lab 03</div>
+    <div class="number">Lab 05</div>
 
-    <h2>Touch Perception Simulation</h2>
+    <h2>P300 Speller</h2>
 
     <p>
-      Follow a touch signal from sensory receptors in the skin,
-      through peripheral nerves and the spinal cord,
-      to the somatosensory cortex.
+      Simulate how attention to a flashing target can produce a
+      measurable brain response and be decoded into a letter
+      selection without using a keyboard.
     </p>
 
-    <span class="status active">
-      Launch Lab →
+    <span class="status coming">
+      Coming Soon
     </span>
 
   </article>
-</a>
 
 
-<!-- LAB 04 -->
-<a class="card-link" href="neural_signal_vs_rocket.html">
+  <!-- LAB 06 -->
   <article class="lab-card">
 
-    <div class="number">Lab 04</div>
+    <div class="number">Lab 06</div>
 
-    <h2>Neural Signal vs. Rocket</h2>
+    <h2>BCI Signal Decoder</h2>
 
     <p>
-      Compare the speed of an action potential with rockets,
-      aircraft, sound, and light while discovering how signals
-      travel through the human nervous system.
+      Follow neural activity from the brain through electrodes,
+      signal processing, feature extraction, AI classification,
+      and external device control.
     </p>
 
-    <span class="status active">
-      Launch Lab →
+    <span class="status coming">
+      Coming Soon
     </span>
 
   </article>
-</a>
+
+</section>
 
 
-<!-- LAB 05 -->
-<article class="lab-card">
+<!-- =====================================================
+     FUTURE OF NEUROTECHNOLOGY
+===================================================== -->
 
-  <div class="number">Lab 05</div>
-
-  <h2>P300 Speller</h2>
-
-  <p>
-    Simulate how attention to a flashing target can be decoded
-    into letter selection without using a keyboard.
-  </p>
-
-  <span class="status coming">
-    Coming Soon
-  </span>
-
-</article>
-
-
-<!-- LAB 06 -->
-<article class="lab-card">
-
-  <div class="number">Lab 06</div>
-
-  <h2>BCI Signal Decoder</h2>
+<div class="lab-category">
+  <h3>Future of Neurotechnology</h3>
 
   <p>
-    Follow neural activity from the brain through electrodes,
-    signal processing, AI decoding, and external device control.
+    Examine the scientific, social, and ethical questions created
+    by technologies that record or interpret brain activity.
   </p>
+</div>
 
-  <span class="status coming">
-    Coming Soon
-  </span>
+<section class="labs">
+
+  <!-- LAB 07 -->
+  <article class="lab-card">
+
+    <div class="number">Lab 07</div>
+
+    <h2>Neural Data &amp; Ethics</h2>
+
+    <p>
+      Explore why brain data is powerful, sensitive, noisy,
+      personally revealing, and ethically important in the future
+      of artificial intelligence and neurotechnology.
+    </p>
+
+    <span class="status coming">
+      Coming Soon
+    </span>
+
+  </article>
+
+</section>
+ 
+
+
+ 
 
 </article>
-
-
-<!-- LAB 07 -->
-<article class="lab-card">
-
-  <div class="number">Lab 07</div>
-
-  <h2>Neural Data & Ethics</h2>
-
-  <p>
-    Explore why brain data is powerful, sensitive, noisy,
-    and ethically important in the future of neurotechnology.
-  </p>
-
-  <span class="status coming">
-    Coming Soon
-  </span>
-
-</article>
-One suggestion that would
 
     <h2 class="section-title">Research Workspace</h2>
 
