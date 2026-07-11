@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BioThink Membrane Potential Lab</title>
+<style>
+:root{--bg:#05060c;--text:#f8f7fb;--muted:#c9c5cf;--maroon:#7a1535;--rose:#c64b75;--gold:#ffd166;--cyan:#59d5ff;--purple:#b59cff;--green:#7ee09b;--line:rgba(255,255,255,.14)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 12% 7%,rgba(122,21,53,.44),transparent 34%),radial-gradient(circle at 88% 9%,rgba(89,213,255,.16),transparent 32%),linear-gradient(180deg,#111421,#05060c 64%,#020308)}
+header{max-width:1200px;margin:auto;padding:28px 20px 14px;text-align:center}.kicker{display:inline-block;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#ffffff0f;color:var(--muted);font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(38px,6vw,70px);margin:16px 0 8px;line-height:.96;letter-spacing:-.05em}.sub{max-width:900px;margin:auto;color:var(--muted);font-size:18px;line-height:1.5}
+main{max-width:1260px;margin:auto;padding:18px 20px 40px}.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}@media(max-width:980px){.layout{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,#ffffff16,#ffffff08);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 30px 90px #0007}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:14px;background:#0004;border-bottom:1px solid var(--line)}
+button{cursor:pointer;border:1px solid #ffffff22;background:#ffffff12;color:#fff;border-radius:999px;padding:10px 14px;font-weight:800}button.primary{background:linear-gradient(135deg,var(--maroon),var(--rose))}button.gold{background:linear-gradient(135deg,#ffd166,#f2b845);color:#241500}
+.stage{position:relative;height:610px;background:linear-gradient(180deg,#07101e,#03050b)}canvas{display:block;width:100%;height:100%}
+.badge,.legend,.phase{position:absolute;background:#08101cbe;border:1px solid var(--line);backdrop-filter:blur(10px)}
+.badge{left:18px;top:18px;padding:13px 16px;border-radius:18px}.badge .v{font-size:34px;font-weight:950;color:var(--gold)}.badge .s{font-size:13px;color:var(--muted)}
+.legend{right:18px;top:18px;padding:11px 13px;border-radius:16px;color:var(--muted);font-size:13px;line-height:1.8}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}.na{background:var(--cyan)}.k{background:var(--purple)}
+.phase{left:50%;bottom:16px;transform:translateX(-50%);padding:10px 15px;border-radius:999px;font-weight:900}
+.panel{padding:21px}.panel h2{margin:0 0 6px;font-size:29px}.panel>p{margin:0 0 14px;color:var(--muted);line-height:1.45}
+.control{padding:14px;border:1px solid #ffffff17;background:#ffffff0c;border-radius:17px;margin-bottom:10px}.row{display:flex;justify-content:space-between;gap:12px}.control h3{margin:0;font-size:18px}.val{color:var(--gold);font-weight:900}.control p{color:var(--muted);font-size:13px;line-height:1.4;margin:6px 0 9px}input[type=range]{width:100%;accent-color:var(--gold)}
+.switches{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.switch{padding:11px;border:1px solid #ffffff18;background:#0003;border-radius:14px;text-align:center;font-weight:800;cursor:pointer}.switch.on{background:#7ee09b1f;border-color:#7ee09b66}
+.info{margin-top:13px;padding:15px;border-radius:18px;background:linear-gradient(135deg,#7a15354d,#ffffff0b);border:1px solid #ffffff1c}.info h3{margin:0 0 7px;color:var(--gold)}.info p{margin:0;line-height:1.45}
+.graph{margin-top:18px}.graphHead{display:flex;justify-content:space-between;padding:15px 18px 8px}.graphHead h2{margin:0;font-size:24px}.graphHead span{color:var(--muted);font-size:13px}.note{padding:13px 17px;background:#fff4cf;color:#3c2b08;font-size:13px;line-height:1.45}
+footer{text-align:center;color:var(--muted);padding:0 20px 26px;font-size:13px}
+</style>
+</head>
+<body>
+<header><div class="kicker">BioThink Virtual NeuroLab · Membrane Lab</div><h1>Build an Action Potential</h1><div class="sub">Control Na⁺ and K⁺ movement across a neuronal membrane. Watch membrane voltage change as you create polarization, depolarization, repolarization, and hyperpolarization.</div></header>
+<main><section class="layout">
+<div>
+<div class="card">
+<div class="toolbar">
+<button class="primary" onclick="runAP()">⚡ Trigger Action Potential</button>
+<button onclick="rest()">Resting State</button>
+<button onclick="depol()">Depolarize</button>
+<button onclick="repol()">Repolarize</button>
+<button onclick="hyper()">Hyperpolarize</button>
+<button class="gold" onclick="resetLab()">Reset</button>
+</div>
+<div class="stage">
+<canvas id="mem"></canvas>
+<div class="badge"><div class="v" id="vtext">−70 mV</div><div class="s" id="state">Resting membrane potential</div></div>
+<div class="legend"><div><span class="dot na"></span>Na⁺ sodium</div><div><span class="dot k"></span>K⁺ potassium</div></div>
+<div class="phase" id="phase">Polarized</div>
+</div></div>
+<div class="card graph"><div class="graphHead"><h2>Membrane Potential Over Time</h2><span>Threshold: −55 mV</span></div><canvas id="graph" style="height:250px;background:#07101a"></canvas><div class="note"><b>Educational model:</b> This is a simplified conductance simulation. Real action potentials depend on voltage-gated channel kinetics, leak currents, concentration gradients, and additional cellular factors.</div></div>
+</div>
+
+<aside class="card panel">
+<h2>Ion Controls</h2><p>Change channel opening and observe the effect on membrane potential.</p>
+<div class="control"><div class="row"><h3>Na⁺ Channel Opening</h3><span class="val" id="nav">5%</span></div><p>Na⁺ enters the neuron and drives depolarization.</p><input id="nas" type="range" min="0" max="100" value="5" oninput="setNa(this.value)"></div>
+<div class="control"><div class="row"><h3>K⁺ Channel Opening</h3><span class="val" id="kv">20%</span></div><p>K⁺ leaves the neuron and drives repolarization or hyperpolarization.</p><input id="ks" type="range" min="0" max="100" value="20" oninput="setK(this.value)"></div>
+<div class="control"><div class="row"><h3>Applied Stimulus</h3><span class="val" id="sv">0</span></div><p>Add inward current. With auto-threshold enabled, reaching −55 mV triggers an action potential.</p><input id="ss" type="range" min="0" max="100" value="0" oninput="setStim(this.value)">
+<div class="switches"><div id="pump" class="switch on" onclick="togglePump()">Na⁺/K⁺ Pump: ON</div><div id="auto" class="switch" onclick="toggleAuto()">Auto threshold: OFF</div></div></div>
+<div class="control"><div class="row"><span>Na⁺ movement</span><strong id="naflow">Small inward flow</strong></div><div class="row" style="margin-top:7px"><span>K⁺ movement</span><strong id="kflow">Moderate outward flow</strong></div><div class="row" style="margin-top:7px"><span>Inside charge</span><strong id="charge">Negative</strong></div><div class="row" style="margin-top:7px"><span>Threshold?</span><strong id="thresh">No</strong></div></div>
+<div class="info"><h3 id="lessonTitle">Polarization</h3><p id="lesson">At rest, the inside of the neuron is negative relative to the outside.</p></div>
+</aside>
+</section></main>
+<footer>BioThink Junior Research Fellows · Neuroscience Foundations</footer>
+
+<script>
+const mc=document.getElementById('mem'),m=mc.getContext('2d'),gc=document.getElementById('graph'),g=gc.getContext('2d');
+let W,H,GW,GH,dpr=Math.min(devicePixelRatio,2),V=-70,na=.05,k=.20,stim=0,pumpOn=true,autoOn=false,seq=false,seqStart=0,last=performance.now(),hist=[],parts=[];
+const ENA=55,EK=-90,EL=-70;
+function resize(){W=mc.clientWidth;H=mc.clientHeight;mc.width=W*dpr;mc.height=H*dpr;m.setTransform(dpr,0,0,dpr,0,0);GW=gc.clientWidth;GH=gc.clientHeight;gc.width=GW*dpr;gc.height=GH*dpr;g.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',resize);resize();
+function seed(){parts=[];for(let i=0;i<55;i++)parts.push({t:'Na',x:Math.random()*W,y:30+Math.random()*H*.32});for(let i=0;i<45;i++)parts.push({t:'K',x:Math.random()*W,y:H*.66+Math.random()*H*.27})}seed();
+function setNa(v){na=v/100;nav.textContent=v+'%';seq=false}function setK(v){k=v/100;kv.textContent=v+'%';seq=false}function setStim(v){stim=v/100;sv.textContent=v;seq=false}
+function sync(){nas.value=na*100;ks.value=k*100;ss.value=stim*100;nav.textContent=Math.round(na*100)+'%';kv.textContent=Math.round(k*100)+'%';sv.textContent=Math.round(stim*100)}
+function togglePump(){pumpOn=!pumpOn;pump.classList.toggle('on',pumpOn);pump.textContent='Na⁺/K⁺ Pump: '+(pumpOn?'ON':'OFF')}
+function toggleAuto(){autoOn=!autoOn;auto.classList.toggle('on',autoOn);auto.textContent='Auto threshold: '+(autoOn?'ON':'OFF')}
+function rest(){seq=false;V=-70;na=.05;k=.20;stim=0;sync()}function depol(){seq=false;na=.88;k=.07;stim=.35;sync()}function repol(){seq=false;na=.03;k=.90;stim=0;sync()}function hyper(){seq=false;na=.01;k=1;stim=0;sync()}
+function resetLab(){seq=false;V=-70;na=.05;k=.20;stim=0;hist=[];sync();seed()}function runAP(){seq=true;seqStart=performance.now()}
+function autoSeq(now){if(!seq)return;let t=(now-seqStart)/1000;if(t<.4){na=.1;k=.14;stim=.9}else if(t<1.1){na=1;k=.05;stim=.2}else if(t<2){na=.03;k=.95;stim=0}else if(t<2.8){na=.01;k=1;stim=0}else if(t<4){na=.05;k=.25;stim=0}else{seq=false;na=.05;k=.20;stim=0}sync()}
+function update(dt,now){autoSeq(now);let gNa=.14*na,gK=.055*k,gL=.012,pumpI=pumpOn?-.12:0,I=stim*8;V+=(gNa*(ENA-V)+gK*(EK-V)+gL*(EL-V)+I+pumpI)*dt*22;V=Math.max(-100,Math.min(60,V));if(autoOn&&V>=-55&&!seq)runAP();hist.push(V);if(hist.length>460)hist.shift()}
+function flow(o,type){if(o<.08)return'Minimal '+(type==='Na'?'inward':'outward')+' flow';if(o<.35)return'Small '+(type==='Na'?'inward':'outward')+' flow';if(o<.75)return'Strong '+(type==='Na'?'inward':'outward')+' flow';return'Very strong '+(type==='Na'?'inward':'outward')+' flow'}
+function state(){if(V<-80)return['Hyperpolarized','Hyperpolarization','K⁺ channels remain open slightly too long, making the inside more negative than resting level.'];if(V<-60)return['Polarized','Polarization','The inside remains negative relative to the outside.'];if(V<30)return['Depolarizing','Depolarization','Na⁺ entry makes the inside less negative and may push the membrane to threshold.'];return['Peak','Action potential peak','Na⁺ channels inactivate while K⁺ channels open to begin repolarization.']}
+function updateParticles(dt){let y=H*.5;for(const p of parts){if(p.t==='Na'&&Math.random()<na*.012)p.y+=2+na*4;if(p.t==='K'&&Math.random()<k*.012)p.y-=2+k*4;if(p.t==='Na'&&p.y>y+85)p.y=30+Math.random()*H*.25;if(p.t==='K'&&p.y<y-85)p.y=H*.72+Math.random()*H*.2}}
+function channel(x,y,label,o,color){m.save();m.translate(x,y);m.fillStyle='#121829';m.strokeStyle=color;m.lineWidth=3;m.beginPath();m.roundRect(-30,-44,60,88,18);m.fill();m.stroke();let gap=5+o*18;m.fillStyle=color;m.fillRect(-16,-44,10,34-gap*.45);m.fillRect(6,-44,10,34-gap*.45);m.fillRect(-16,10+gap*.45,10,34-gap*.45);m.fillRect(6,10+gap*.45,10,34-gap*.45);m.fillStyle='#fff';m.font='900 13px Arial';m.textAlign='center';m.fillText(label,0,-56);m.fillStyle=o>.15?'#7ee09b':'#ff8d8d';m.font='800 11px Arial';m.fillText(o>.15?'OPEN':'CLOSED',0,63);m.restore()}
+function draw(){m.clearRect(0,0,W,H);let y=H*.5;m.fillStyle='#0d284066';m.fillRect(0,0,W,y-22);m.fillStyle='#321d3f66';m.fillRect(0,y+22,W,H-y);m.fillStyle='#fff';m.font='700 15px Arial';m.fillText('Outside of neuron',22,70);m.fillText('Inside of neuron',22,H-40);for(let x=0;x<W;x+=22){m.fillStyle='#f3d38a';m.beginPath();m.arc(x+11,y-13,7,0,Math.PI*2);m.fill();m.beginPath();m.arc(x+11,y+13,7,0,Math.PI*2);m.fill();m.strokeStyle='#f3d38aaa';m.beginPath();m.moveTo(x+8,y-7);m.lineTo(x+6,y+1);m.moveTo(x+14,y-7);m.lineTo(x+16,y+1);m.moveTo(x+8,y+7);m.lineTo(x+6,y-1);m.moveTo(x+14,y+7);m.lineTo(x+16,y-1);m.stroke()}channel(W*.38,y,'Na⁺',na,'#59d5ff');channel(W*.66,y,'K⁺',k,'#b59cff');for(const p of parts){let c=p.t==='Na'?'#59d5ff':'#b59cff';m.fillStyle=c;m.shadowBlur=11;m.shadowColor=c;m.beginPath();m.arc(p.x,p.y,6,0,Math.PI*2);m.fill();m.shadowBlur=0;m.fillStyle='#07101a';m.font='800 8px Arial';m.textAlign='center';m.fillText(p.t,p.x,p.y+3);m.textAlign='left'}}
+function drawGraph(){g.clearRect(0,0,GW,GH);g.fillStyle='#07101a';g.fillRect(0,0,GW,GH);let L=50,T=16,B=28,w=GW-L-16,h=GH-T-B,yf=v=>T+(60-v)/160*h;g.strokeStyle='#ffffff18';[-90,-70,-55,0,40].forEach(v=>{let y=yf(v);g.beginPath();g.moveTo(L,y);g.lineTo(L+w,y);g.stroke();g.fillStyle='#aeb4c0';g.font='12px Arial';g.fillText(v,8,y+4)});g.strokeStyle='#ffd16688';g.setLineDash([6,5]);let ty=yf(-55);g.beginPath();g.moveTo(L,ty);g.lineTo(L+w,ty);g.stroke();g.setLineDash([]);if(hist.length>1){let gr=g.createLinearGradient(L,0,L+w,0);gr.addColorStop(0,'#59d5ff');gr.addColorStop(.55,'#ffd166');gr.addColorStop(1,'#7ee09b');g.strokeStyle=gr;g.lineWidth=3;g.beginPath();hist.forEach((v,i)=>{let x=L+i/459*w,y=yf(v);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()}g.fillStyle='#aeb4c0';g.fillText('mV',12,14);g.fillText('time →',GW-58,GH-8)}
+function labels(){let s=state();vtext.textContent=(V>=0?'+':'')+Math.round(V)+' mV';state.textContent=s[1];phase.textContent=s[0];lessonTitle.textContent=s[1];lesson.textContent=s[2];naflow.textContent=flow(na,'Na');kflow.textContent=flow(k,'K');charge.textContent=V<0?'Negative':V>0?'Positive':'Near neutral';thresh.textContent=V>=-55?'Yes':'No'}
+function loop(now){let dt=Math.min(.04,(now-last)/1000);last=now;update(dt,now);updateParticles(dt);draw();drawGraph();labels();requestAnimationFrame(loop)}rest();requestAnimationFrame(loop);
+</script>
+</body>
+</html>
