@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BioThink Virtual Neuroscience Lab</title>
+<style>
+  :root{
+    --maroon:#8A1538;
+    --deep:#4B071C;
+    --dark:#101010;
+    --cream:#FAF7F3;
+    --soft:#EFE4E6;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(138,21,56,.28), transparent 28%),
+      radial-gradient(circle at 82% 10%, rgba(138,21,56,.18), transparent 26%),
+      linear-gradient(135deg,#0d0d0d,#270713 55%,#0d0d0d);
+    color:#1b1b1b;
+    min-height:100vh;
+  }
+  .page{max-width:1180px;margin:0 auto;padding:38px 26px 50px;}
+  .hero{
+    background:rgba(250,247,243,.98);
+    border-radius:28px;
+    padding:42px;
+    box-shadow:0 25px 70px rgba(0,0,0,.38);
+    overflow:hidden;
+    position:relative;
+  }
+  .hero:after{
+    content:"";
+    position:absolute;
+    right:-120px;
+    top:-120px;
+    width:360px;
+    height:360px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(138,21,56,.18), transparent 68%);
+  }
+  .topline{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;position:relative;z-index:1;}
+  .brand{color:var(--maroon);font-family:Georgia,serif;font-size:30px;font-weight:bold;letter-spacing:.3px;}
+  .portal{color:#333;font-size:13px;letter-spacing:.16em;text-transform:uppercase;margin-top:6px;}
+  .badge{border:1px solid rgba(138,21,56,.25);color:var(--maroon);border-radius:999px;padding:10px 15px;font-weight:700;background:#fff;white-space:nowrap;font-size:14px;}
+  h1{margin:48px 0 14px;font-family:Georgia,serif;font-size:52px;line-height:1.04;color:#111;max-width:760px;position:relative;z-index:1;}
+  .lead{max-width:740px;font-size:18px;line-height:1.55;color:#333;position:relative;z-index:1;}
+  .section-title{margin:34px 0 16px;color:#fff;font-family:Georgia,serif;font-size:30px;}
+  .labs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .lab-card{
+    background:rgba(255,255,255,.96);
+    border-radius:22px;
+    padding:24px;
+    min-height:220px;
+    border:1px solid rgba(255,255,255,.5);
+    box-shadow:0 14px 35px rgba(0,0,0,.25);
+    position:relative;
+    overflow:hidden;
+  }
+  .lab-card:before{
+    content:"";
+    position:absolute;
+    right:-45px;
+    top:-45px;
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(138,21,56,.18), transparent 65%);
+  }
+  .number{color:var(--maroon);font-weight:800;letter-spacing:.12em;font-size:12px;text-transform:uppercase;margin-bottom:18px;}
+  .lab-card h2{margin:0 0 10px;font-family:Georgia,serif;font-size:24px;color:#111;}
+  .lab-card p{margin:0;color:#4b4b4b;line-height:1.45;font-size:15px;}
+  .status{display:inline-block;margin-top:18px;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;}
+  .active{background:var(--maroon);color:white;text-decoration:none;}
+  .coming{background:#f4ecee;color:var(--maroon);}
+  .resources{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;}
+  .resource{background:rgba(250,247,243,.96);border-radius:22px;padding:24px;border-left:5px solid var(--maroon);box-shadow:0 14px 35px rgba(0,0,0,.22);}
+  .resource h3{margin:0 0 8px;font-family:Georgia,serif;font-size:22px;}
+  .resource p{margin:0;color:#444;line-height:1.45;}
+  .footer{text-align:center;color:#d9cfd1;font-size:13px;margin-top:34px;}
+  a.card-link{text-decoration:none;color:inherit;}
+  @media(max-width:900px){.labs{grid-template-columns:1fr 1fr}h1{font-size:42px}}
+  @media(max-width:640px){.labs,.resources{grid-template-columns:1fr}.hero{padding:30px}.topline{display:block}.badge{display:inline-block;margin-top:18px}h1{font-size:36px;margin-top:34px}}
+</style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="topline">
+        <div>
+          <div class="brand">BioThink</div>
+          <div class="portal">Virtual Neuroscience Lab</div>
+        </div>
+        <div class="badge">Student Portal</div>
+      </div>
+      <h1>Interactive labs for thinking like a neuroscientist.</h1>
+      <p class="lead">
+        Welcome to the BioThink Virtual Neuroscience Lab. These simulations help connect core neuroscience concepts
+        to brain-computer interfaces, artificial intelligence, scientific literature, and the review article we will build together.
+      </p>
+    </section>
+
+    <h2 class="section-title">Virtual Labs</h2>
+
+    <section class="labs">
+      <a class="card-link" href="neuron.html">
+        <div class="lab-card">
+          <div class="number">Lab 01</div>
+          <h2>Neuron Firing Simulator</h2>
+          <p>Explore resting potential, threshold, action potentials, depolarization, repolarization, and recovery.</p>
+          <span class="status active">Open Lab →</span>
+        </div>
+      </a>
+
+      <div class="lab-card">
+        <div class="number">Lab 02</div>
+        <h2>Synaptic Transmission</h2>
+        <p>Trace how electrical signals become chemical messages and influence the next neuron in a circuit.</p>
+        <span class="status coming">Coming Soon</span>
+      </div>
+
+      <div class="lab-card">
+        <div class="number">Lab 03</div>
+        <h2>Artificial Neural Networks</h2>
+        <p>Compare biological neurons with artificial neurons and explore how simple inputs become predictions.</p>
+        <span class="status coming">Coming Soon</span>
+      </div>
+
+      <div class="lab-card">
+        <div class="number">Lab 04</div>
+        <h2>P300 Speller</h2>
+        <p>Simulate how attention to a flashing target can be decoded into a letter selection without a keyboard.</p>
+        <span class="status coming">Coming Soon</span>
+      </div>
+
+      <div class="lab-card">
+        <div class="number">Lab 05</div>
+        <h2>BCI Signal Decoder</h2>
+        <p>Follow the path from neural activity to electrodes, signal processing, AI classification, and output control.</p>
+        <span class="status coming">Coming Soon</span>
+      </div>
+
+      <div class="lab-card">
+        <div class="number">Lab 06</div>
+        <h2>Neural Data & Ethics</h2>
+        <p>Explore why brain data is powerful, sensitive, noisy, and ethically important in the future of neurotechnology.</p>
+        <span class="status coming">Coming Soon</span>
+      </div>
+    </section>
+
+    <h2 class="section-title">Research Workspace</h2>
+
+    <section class="resources">
+      <div class="resource">
+        <h3>Literature Review Toolkit</h3>
+        <p>Use this space to organize papers, identify research questions, compare evidence, and prepare manuscript sections.</p>
+      </div>
+      <div class="resource">
+        <h3>BioThink Research Notebook</h3>
+        <p>Track weekly vocabulary, paper notes, figures, questions, reflections, and ideas for the collaborative review article.</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      BioThink • Pre-Collegiate Research Fellowship • www.biothink.org
+    </div>
+  </main>
+</body>
+</html>
